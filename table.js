@@ -1,3 +1,16 @@
+console.log(Date.now())
+var responseDatabase;
+$.getJSON("https://raw.githubusercontent.com/forrestbicker/GetPPE/master/USCities.json", function (zipcodedata) {
+    $.getJSON("http://gsx2json.com/api?id=1FKx19MJpmANmBKCha47LFOm2RDwH57JGPKvHJJ1iRMo&columns=false&sheet=2").then(function (data) {
+        console.log(Date.now())
+        responseDatabase = data.rows;
+        for (const row of responseDatabase) {
+            row.location = zipcodedata[row.zipcode]
+        }
+        updateTable();
+    });
+});
+
 var map = L.map('mapid', { zoomControl: false, }).setView([38, -96], 3.5);
 map.touchZoom.disable();
 map.doubleClickZoom.disable();
