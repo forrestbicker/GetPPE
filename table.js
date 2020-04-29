@@ -76,6 +76,37 @@ function updateTable() {
             // });
 
             marker.addTo(mapMarkers);;
+            htmlStr +=
+                `
+                <div>
+                    <h1>${titleCase(row.location.city)}, ${row.location.state} - ${row.name}</h1>
+                    <h3>${row.organization}</h3>
+                    <table>
+                        <tr>
+                            <td class="borderless">
+                                <h3><u>Request</u></h3>`;
+            for (const ppe of ppeIDs) {
+                var ppeQuantity = row[ppe.toLowerCase()]
+                if (ppeQuantity > 0) {
+                    htmlStr += `<li>${ppe}: ${ppeQuantity}</li>`;
+                }
+            }
+            htmlStr += `
+                            </td>
+                            <td class="borderless">
+                                <h3><u>Contact</u></h3>
+                                <li>Email: ${row.email}</li>
+                                <li>Phone: ${row.phone}</li>
+                                <h3><u>Notes</u></h3>
+                                <li>${row.notes}</li>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <hr>`;
+        }
+        document.getElementById('listing').innerHTML = htmlStr;
+    }
 }
 
 function passesFilter(row) {
