@@ -1,10 +1,10 @@
 @supports (-webkit-appearance: none) or (-moz-appearance: none) {
     input[type="checkbox"], input[type="radio"] {
-        --active: #275efe;
+        --active: #ce7231;
         --active-inner: #fff;
         --focus: 2px rgba(39, 94, 254, 0.3);
         --border: #bbc1e1;
-        --border-hover: #275efe;
+        --border-hover: #ce7231;
         --background: #fff;
         --disabled: #f6f8ff;
         --disabled-inner: #e1e6f9;
@@ -155,3 +155,48 @@ html {
     box-sizing: inherit;
 }
 
+body {
+    font-family: "Inter", Arial, sans-serif;
+    color: #8a0000;
+    background: #FFF5EB;
+}
+
+@media (max-width: 800px) {
+    body {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        flex-direction: column;
+    }
+}
+
+.column {
+    flex: auto;
+    display: inline-block;
+    /* text-align: center; */
+}
+
+td {
+    text-align: center;
+    border-right: solid 1px #000;
+    border-left: solid 1px #000;
+}
+
+td.borderless {
+    border: none;
+    padding: 10px;
+    text-align: left;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+h1, h2, h3, h4 li {
+    line-height: 50%;
+}
+
+/* tr {
+    font-size: 75%;
+} */
