@@ -40,6 +40,14 @@ function setupInputs(inputIDs) {
     }
     return inputDict
 }
+function passesFilter(row) {
+    for (const ppe in inputs) {
+        if (inputs[ppe].checked && row[ppe.toLowerCase()] > 0) {
+            return true;
+        }
+    }
+    return false;
+}
 var MyCustomMarker = L.Marker.extend({
 
     bindPopup: function (htmlContent, options) {
