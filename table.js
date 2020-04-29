@@ -27,6 +27,10 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     zoomOffset: -1,
 }).addTo(map);
 var mapMarkers = L.layerGroup().addTo(map);
+
+// create markers
+
+
 var ppeIDs = ["N95s", "Surgical Masks", "Face Shields", "Safety Goggles", "Gowns", "Gloves", "Hair Bonnets", "Hand Sanitizers", "Spray Bottles", "Shoecovers"]
 
 var inputs = setupInputs(ppeIDs);
@@ -53,6 +57,27 @@ function setupInputs(inputIDs) {
     }
     return inputDict
 }
+function updateTable() {
+    var htmlStr = "";
+    mapMarkers.clearLayers();
+
+    for (const row of responseDatabase) {
+        if (passesFilter(row)) {
+            var marker = new MyCustomMarker([row.location.latitude, row.location.longitude]);
+
+            marker.bindPopup(`${titleCase(row.location.city)}, ${row.location.state} - ${row.name}`, { showOnMouseOver: true })
+
+            // marker.on('mouseover', function (event) {
+            //     marker.openPopup();
+            //     console.log(this);
+            // });
+            // marker.on('mouseout', function (event) {
+            //     marker.closePopup();
+            // });
+
+            marker.addTo(mapMarkers);;
+}
+
 function passesFilter(row) {
     for (const ppe in inputs) {
         if (inputs[ppe].checked && row[ppe.toLowerCase()] > 0) {
