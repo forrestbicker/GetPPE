@@ -14,3 +14,29 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     zoomOffset: -1,
 }).addTo(map);
 var mapMarkers = L.layerGroup().addTo(map);
+var ppeIDs = ["N95s", "Surgical Masks", "Face Shields", "Safety Goggles", "Gowns", "Gloves", "Hair Bonnets", "Hand Sanitizers", "Spray Bottles", "Shoecovers"]
+
+var inputs = setupInputs(ppeIDs);
+
+function setupInputs(inputIDs) {
+    var htmlStr = "";
+
+    for (const id of inputIDs) {
+        htmlStr += `
+    <td class="distributor">
+        <input id="${id}" type="checkbox">
+            <br>
+                ${id}
+        </td>`
+    }
+
+    document.getElementById('checkboxes').innerHTML = htmlStr;
+
+    var inputDict = {}
+    for (const id of inputIDs) {
+        inputDict[id] = document.getElementById(id);
+        inputDict[id].checked = true;
+        inputDict[id].onclick = function () { updateTable() }; // TODO:
+    }
+    return inputDict
+}
