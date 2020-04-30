@@ -1,9 +1,8 @@
 console.log(Date.now())
 var responseDatabase;
 $.getJSON("https://raw.githubusercontent.com/forrestbicker/GetPPE/master/USCities.json", function (zipcodedata) {
-    $.getJSON("http://gsx2json.com/api?id=1FKx19MJpmANmBKCha47LFOm2RDwH57JGPKvHJJ1iRMo&columns=false&sheet=2").then(function (data) {
-        console.log(Date.now())
-        responseDatabase = data.rows;
+    $.getJSON("https://spreadsheets.google.com/feeds/cells/1FKx19MJpmANmBKCha47LFOm2RDwH57JGPKvHJJ1iRMo/2/public/full?alt=json&rows=false&columns=false", function (data) {
+        responseDatabase = parseGSJSON(data);
         for (const row of responseDatabase) {
             row.location = zipcodedata[row.zipcode]
         }
@@ -28,34 +27,23 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 }).addTo(map);
 var mapMarkers = L.layerGroup().addTo(map);
 
-// create markers
-
 
 var ppeIDs = ["N95s", "Surgical Masks", "Face Shields", "Safety Goggles", "Gowns", "Gloves", "Hair Bonnets", "Hand Sanitizers", "Spray Bottles", "Shoecovers"]
 
-var inputs = setupInputs(ppeIDs);
+var input = setupInputs(ppeIDs);
 
 function setupInputs(inputIDs) {
     var htmlStr = "";
 
     for (const id of inputIDs) {
-        htmlStr += `
-    <td class="distributor">
-        <input id="${id}" type="checkbox">
-            <br>
-                ${id}
-        </td>`
+        htmlStr += `<option value="${id}">${id}</option>`
     }
 
-    document.getElementById('checkboxes').innerHTML = htmlStr;
+    var input = document.getElementById('dropdown');
+    input.innerHTML = htmlStr;
+    input.onchange = function() { updateTable() };
 
-    var inputDict = {}
-    for (const id of inputIDs) {
-        inputDict[id] = document.getElementById(id);
-        inputDict[id].checked = true;
-        inputDict[id].onclick = function () { updateTable() }; // TODO:
-    }
-    return inputDict
+    return input;
 }
 function updateTable() {
     var htmlStr = "";
@@ -80,13 +68,12 @@ function updateTable() {
                 `
                 <div>
                     <h1>${titleCase(row.location.city)}, ${row.location.state} - ${row.name}</h1>
-                    <h3>${row.organization}</h3>
                     <table>
                         <tr>
                             <td class="borderless">
                                 <h3><u>Request</u></h3>`;
             for (const ppe of ppeIDs) {
-                var ppeQuantity = row[ppe.toLowerCase()]
+                var ppeQuantity = row[ppe]
                 if (ppeQuantity > 0) {
                     htmlStr += `<li>${ppe}: ${ppeQuantity}</li>`;
                 }
@@ -98,7 +85,7 @@ function updateTable() {
                                 <li>Email: ${row.email}</li>
                                 <li>Phone: ${row.phone}</li>
                                 <h3><u>Notes</u></h3>
-                                <li>${row.notes}</li>
+                                ${(row.notes).replace(/\n/g, "<br>")}
                             </td>
                         </tr>
                     </table>
@@ -110,12 +97,7 @@ function updateTable() {
 }
 
 function passesFilter(row) {
-    for (const ppe in inputs) {
-        if (inputs[ppe].checked && row[ppe.toLowerCase()] > 0) {
-            return true;
-        }
-    }
-    return false;
+    return row[input.value] > 0;
 }
 
 function titleCase(str) {

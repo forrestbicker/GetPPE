@@ -200,3 +200,15 @@ h1, h2, h3, h4 li {
 /* tr {
     font-size: 75%;
 } */
+
+.options {
+    border: 1px solid #e5e5e5;
+    padding: 10px;
+}
+
+select {
+    font-size: 14px;
+    border: none;
+    width: 100%;
+    background: white;
+}
