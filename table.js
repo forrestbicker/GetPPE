@@ -217,3 +217,39 @@ var MyCustomMarker = L.Marker.extend({
     }
 
 });
+
+function parseGSJSON(json) {
+    var out = [];
+    var keys = []
+    var i = 0;
+    while (json["feed"]["entry"][i]["gs$cell"]["row"] === "1") {
+        keys.push(json["feed"]["entry"][i]["gs$cell"]["$t"]);
+        i++;
+    }
+    while (i < json["feed"]["entry"].length) {
+        var data = json["feed"]["entry"][i]["gs$cell"];
+        var row = data["row"] - 2;
+        var col = keys[data["col"] - 1];
+        if (out[row] === undefined) {
+            out[row] = {};
+        }
+        var cellValue = data["$t"];
+        if (isNaN(cellValue)) {
+            out[row][col] = data["$t"];
+        } else {
+            out[row][col] = parseFloat(data["$t"]);
+        }
+        i++;
+    }
+    // for (const cell in json["feed"]["entry"]) {
+    //     var data = json["feed"]["entry"][cell]["gs$cell"]
+    //     if (data["row"] === "1") {
+    //         keys.push(data["$t"]);
+    //     } else {
+    //         var dict = {}
+    //         dict[key] =
+    //             out[keys[data["col"] - 1]].push(data["$t"]);
+    //     }
+    // }
+    return out;
+}
